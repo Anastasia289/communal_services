@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "corsheaders",
     "drf_yasg",
+    "celery",
     "rest_framework",
     "rest_framework_simplejwt",
     "rest_framework.authtoken",
@@ -133,3 +134,19 @@ DJOSER = {
 }
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+
+CELERY_BROKER_URL = "redis://localhost:6379"  # Пример URL Redis-брокера
+CELERY_RESULT_BACKEND = (
+    "django-db"  # Используем базу данных Django для хранения результатов задач
+)
+CELERY_RESULT_EXPIRES = 60 * 60 * 24  # 24 часа
+CELERY_RESULT_DB_TABLE_NAME = "celery_results"
+CELERY_TIMEZONE = "Europe/Moscow"
+
+# celery -A task worker --loglevel=INFO
+# CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
+# CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'
+# CELERY_ACCEPT_CONTENT = ['json']
+# CELERY_TASK_SERIALIZER = 'json'
+# CELERY_RESULT_SERIALIZER = 'json'
