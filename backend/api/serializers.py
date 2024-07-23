@@ -1,9 +1,15 @@
 from djoser.serializers import UserCreateSerializer, UserSerializer
-
-# from rest_framework.fields import SerializerMethodField
+from rest_framework.fields import SerializerMethodField
+from rest_framework.serializers import ModelSerializer
+from services.models import (
+    Apartment,
+    House,
+    Rent,
+    Tariff,
+    WaterMeter,
+    WaterMeterData,
+)
 from users.models import CustomUser
-
-# from rest_framework import serializers
 
 
 class CustomUserSerializer(UserSerializer):
@@ -29,4 +35,82 @@ class CustomUserCreateSerializer(UserCreateSerializer):
             "username",
             "email",
             "password",
+        )
+
+
+class HouseGetSerializer(ModelSerializer):
+    """Сериализатор для получения полной информации о доме."""
+
+    apartment = SerializerMethodField()
+
+    class Meta:
+        model = House
+        fields = ("id", "name", "adress", "apartment")
+
+    def get_apartment(self, obj):
+        apartment = Apartment.objects.filter(house=obj).all()
+        return ApartmentGetSerializer(apartment, many=True).data
+
+
+class ApartmentGetSerializer(ModelSerializer):
+    """Сериализатор для получения полной информации о квартире."""
+
+    watermeter = SerializerMethodField()
+
+    class Meta:
+        model = Apartment
+        fields = ("id", "number", "house", "area", "watermeter")
+
+    def get_watermeter(self, obj):
+        watermeter = WaterMeter.objects.filter(apartment=obj).all()
+        return WaterMeterGetSerializer(watermeter, many=True).data
+
+
+class WaterMeterGetSerializer(ModelSerializer):
+    """Сериализатор для получения полной информации о счетчике."""
+
+    watermeterdata = SerializerMethodField()
+
+    class Meta:
+        model = WaterMeter
+        fields = (
+            "id",
+            "number",
+            "valid_till",
+            "apartment",
+            "watermeterdata",
+        )
+
+    def get_watermeterdata(self, obj):
+        watermeterdata = WaterMeterData.objects.filter(water_meter=obj).all()
+        return WaterMeterDataSerializer(watermeterdata, many=True).data
+
+
+class WaterMeterDataSerializer(ModelSerializer):
+    """Показания счетчиков."""
+
+    class Meta:
+        model = WaterMeterData
+        fields = ("id", "water_meter", "meter_readings", "date")
+
+
+class TariffSerializer(ModelSerializer):
+    """Тарифы."""
+
+    class Meta:
+        model = Tariff
+        fields = ("id", "name", "description", "average_readings", "price")
+
+
+class RentSerializer(ModelSerializer):
+    """Квартплата."""
+
+    class Meta:
+        model = Rent
+        fields = (
+            "id",
+            "apartment",
+            "water_price",
+            "property_price",
+            "date",
         )
