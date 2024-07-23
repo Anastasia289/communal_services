@@ -38,7 +38,7 @@ services:
       - redis
     env_file:
       - .env
-    command: celery -A services worker --loglevel=info -P eventlet
+    command: celery -A backend worker --loglevel=info -P eventlet
     restart: always
 
   celery_beat:
@@ -50,7 +50,7 @@ services:
       - redis
     env_file:
       - .env
-    command: celery -A services beat -l info
+    command: celery -A backend beat -l info
     restart: always
 
   gateway:
