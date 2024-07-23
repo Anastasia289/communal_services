@@ -1,14 +1,14 @@
-import eventlet
-from celery.task import periodic_task
+# import eventlet
+# from celery.task import periodic_task
 
-eventlet.monkey_patch()
+# eventlet.monkey_patch()
 
-# from services.models import WaterMeterData
+# # from services.models import WaterMeterData
 
 
-@periodic_task(
-    ignore_result=True, run_every=30
-)  # 10 секунд, или timedelta(seconds=10)
-def just_print():
-    # d = WaterMeterData.objects.filter
-    print("Print from celery task")
+# @periodic_task(
+#     ignore_result=True, run_every=30
+# )  # 10 секунд, или timedelta(seconds=10)
+# def just_print():
+#     # d = WaterMeterData.objects.filter
+#     print("Print from celery task")
