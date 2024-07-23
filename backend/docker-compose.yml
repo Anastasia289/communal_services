@@ -16,10 +16,6 @@ services:
 
   backend:
     image: anastasia289/communal_services_backend
-  # backend:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
     env_file: .env
     volumes:
       - static:/static
@@ -43,7 +39,7 @@ services:
     env_file:
       - .env
     # command: celery -A api worker --loglevel=info -P eventlet
-    command: celery -A api worker -l info -P eventlet
+    command: celery -A backend worker -l info -P eventlet
     restart: always
 
   celery_beat:
@@ -55,7 +51,7 @@ services:
       - redis
     env_file:
       - .env
-    command: celery -A api beat -l info
+    command: celery -A backend beat -l info
     restart: always
 
   gateway:
