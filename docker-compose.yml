@@ -8,20 +8,24 @@ volumes:
 
 services:
 
-  # db:
-  #   image: postgres:13.10
-  #   env_file: .env
-  #   volumes:
-  #     - pg_data:/var/lib/postgresql/data
+  db:
+    image: postgres:13.10
+    env_file: .env
+    volumes:
+      - pg_data:/var/lib/postgresql/data
 
   backend:
     image: anastasia289/communal_services_backend
+  # backend:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
     env_file: .env
     volumes:
       - static:/static
       - media:/app/media
-    # depends_on:
-    #   - db
+    depends_on:
+      - db
 
   redis:
     image: redis:alpine
@@ -34,11 +38,12 @@ services:
       context: .
       dockerfile: Dockerfile
     depends_on:
-      # - db
+      - db
       - redis
     env_file:
       - .env
-    command: celery -A backend worker --loglevel=info -P eventlet
+    # command: celery -A api worker --loglevel=info -P eventlet
+    command: celery -A api worker -l info -P eventlet
     restart: always
 
   celery_beat:
@@ -46,11 +51,11 @@ services:
       context: .
       dockerfile: Dockerfile
     depends_on:
-      # - db
+      - db
       - redis
     env_file:
       - .env
-    command: celery -A backend beat -l info
+    command: celery -A api beat -l info
     restart: always
 
   gateway:
