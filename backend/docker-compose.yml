@@ -40,7 +40,7 @@ services:
       - .env
     # command: celery -A api worker --loglevel=info -P eventlet
     command: celery -A backend worker -l info -P eventlet
-    restart: always
+    # restart: always
 
   celery_beat:
     build:
@@ -52,7 +52,7 @@ services:
     env_file:
       - .env
     command: celery -A backend beat -l info
-    restart: always
+    # restart: always
 
   gateway:
     image: anastasia289/communal_services_infra

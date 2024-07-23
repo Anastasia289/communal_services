@@ -1,4 +1,7 @@
+import eventlet
 from celery.task import periodic_task
+
+eventlet.monkey_patch()
 
 # from services.models import WaterMeterData
 
