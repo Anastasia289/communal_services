@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "corsheaders",
     "drf_yasg",
     "rest_framework",
     "rest_framework_simplejwt",
@@ -30,6 +31,8 @@ INSTALLED_APPS = [
     "djoser",
     "django_filters",
     "users",
+    "api",
+    "services",
 ]
 
 
@@ -86,21 +89,47 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-LANGUAGE_CODE = "en-us"
+LLANGUAGE_CODE = "ru-RU"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Europe/Moscow"
 
 USE_I18N = True
 
+USE_L10N = True
+
 USE_TZ = True
 
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "collected_static"
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.2/howto/static-files/
-
-STATIC_URL = "static/"
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "/media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.AllowAny",
+    ],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
+        "rest_framework.authentication.BasicAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+    ],
+}
+
+DJOSER = {
+    "LOGIN_FIELD": "username",
+    "SERIALIZERS": {
+        "current_user": "api.serializers.CustomUserSerializer",
+        "user": "api.serializers.CustomUserSerializer",
+        "user_create": "api.serializers.CustomUserCreateSerializer",
+    },
+    "PERMISSIONS": {
+        "user": ["rest_framework.permissions.AllowAny"],
+        "user_list": ["rest_framework.permissions.AllowAny"],
+    },
+    "HIDE_USERS": False,
+}
+
+CORS_ALLOW_ALL_ORIGINS = True
