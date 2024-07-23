@@ -147,13 +147,13 @@ DJOSER = {
 CORS_ALLOW_ALL_ORIGINS = True
 
 
-CELERY_BROKER_URL = "redis://localhost:6379"  # Пример URL Redis-брокера
-CELERY_RESULT_BACKEND = (
-    "django-db"  # Используем базу данных Django для хранения результатов задач
-)
-CELERY_RESULT_EXPIRES = 60 * 60 * 24  # 24 часа
-CELERY_RESULT_DB_TABLE_NAME = "celery_results"
-CELERY_TIMEZONE = "Europe/Moscow"
+# CELERY_BROKER_URL = "redis://localhost:6379"  # Пример URL Redis-брокера
+# CELERY_RESULT_BACKEND = (
+#     "django-db"  # Используем базу данных Django для хранения результатов задач
+# )
+# CELERY_RESULT_EXPIRES = 60 * 60 * 24  # 24 часа
+# CELERY_RESULT_DB_TABLE_NAME = "celery_results"
+# CELERY_TIMEZONE = "Europe/Moscow"
 
 # celery -A task worker --loglevel=INFO
 # CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
@@ -161,3 +161,10 @@ CELERY_TIMEZONE = "Europe/Moscow"
 # CELERY_ACCEPT_CONTENT = ['json']
 # CELERY_TASK_SERIALIZER = 'json'
 # CELERY_RESULT_SERIALIZER = 'json'
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
+CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND")
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+CELERY_TIMEZONE = "Europe/Moscow"
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+# если планировщик запущен, добавить в .env INCLUDE_CELERY = True
+# INCLUDE_CELERY = os.getenv("INCLUDE_CELERY", False)
