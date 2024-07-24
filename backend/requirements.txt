@@ -3,7 +3,8 @@ asgiref==3.7.2
 atomicwrites==1.4.1
 attrs==23.2.0
 billiard==4.2.0
-celery==5.4.0
+# celery==5.4.0
+celery==4.4.2
 certifi==2023.11.17
 cffi==1.16.0
 cfgv==3.4.0
