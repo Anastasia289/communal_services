@@ -50,7 +50,7 @@ def add_data(apps, schema_editor):
     WaterMeter = apps.get_model("services", "WaterMeter")
     
     WaterMeter.objects.get_or_create(
-        number='12345',
+        number='1234',
         valid_till='2025-12-23',
         apartment_id=1
     )
@@ -62,37 +62,37 @@ def add_data(apps, schema_editor):
     )
     
     WaterMeter.objects.get_or_create(
-        number='65456',
+        number='656',
         valid_till='2026-12-23',
         apartment_id=1
     )
     
     WaterMeter.objects.get_or_create(
-        number='15567',
+        number='155',
         valid_till='2027-12-23',
         apartment_id=2
     )
     
     WaterMeter.objects.get_or_create(
-        number='12654',
+        number='120',
         valid_till='2022-12-23',
         apartment_id=2
     )
     
     WaterMeter.objects.get_or_create(
-        number='127654',
+        number='127',
         valid_till='2025-12-23',
         apartment_id=3
     )
     
     WaterMeter.objects.get_or_create(
-        number='1285948',
+        number='12',
         valid_till='2028-12-23',
         apartment_id=4
     )
     
     WaterMeter.objects.get_or_create(
-        number='1298785',
+        number='1785',
         valid_till='2024-11-23',
         apartment_id=5
     )
@@ -104,7 +104,7 @@ def add_data(apps, schema_editor):
     )
     
     WaterMeter.objects.get_or_create(
-        number='1236324',
+        number='987',
         valid_till='2029-12-23',
         apartment_id=6
     )
