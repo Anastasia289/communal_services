@@ -15,7 +15,10 @@ services:
       - pg_data:/var/lib/postgresql/data
 
   backend:
-    image: anastasia289/communal_services_backend
+    # image: anastasia289/communal_services_backend
+    build:
+      context: .
+      dockerfile: Dockerfile
     env_file: .env
     volumes:
       - static:/static
