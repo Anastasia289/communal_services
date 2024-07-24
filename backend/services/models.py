@@ -1,5 +1,3 @@
-from datetime import date
-
 from django.contrib.auth import get_user_model
 from django.db import models
 
@@ -77,8 +75,10 @@ class WaterMeterData(models.Model):
     meter_readings = models.PositiveSmallIntegerField("Показания счетчика")
     date = models.DateField(
         "Дата снятия показаний",
-        default=date.today(),
+        auto_now_add=True,
     )
+    year = models.PositiveSmallIntegerField("Год")
+    month = models.PositiveSmallIntegerField("Месяц")
 
     class Meta:
         verbose_name = "Показания счетчика"
@@ -128,6 +128,8 @@ class Rent(models.Model):
         auto_now_add=True,
         verbose_name="Дата показаний",
     )
+    year = models.PositiveSmallIntegerField("Год")
+    month = models.PositiveSmallIntegerField("Месяц")
 
     class Meta:
         verbose_name = "Квартплата"

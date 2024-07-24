@@ -22,7 +22,14 @@ class WaterMeterAdmin(admin.ModelAdmin):
 
 
 class WaterMeterDataAdmin(admin.ModelAdmin):
-    list_display = ("id", "water_meter", "meter_readings", "date")
+    list_display = (
+        "id",
+        "water_meter",
+        "meter_readings",
+        "year",
+        "month",
+        "date",
+    )
     empty_value_display = "-пусто-"
 
 
@@ -37,6 +44,8 @@ class RentAdmin(admin.ModelAdmin):
         "apartment",
         "water_price",
         "property_price",
+        "year",
+        "month",
         "date",
     )
     empty_value_display = "-пусто-"
