@@ -31,9 +31,9 @@ INSTALLED_APPS = [
     "django_filters",
     "django_celery_beat",
     "corsheaders",
-    "drf_yasg",
+    # "drf_yasg",
     "rest_framework.authtoken",
-    -"users",
+    "users",
     "api",
     "services",
 ]
