@@ -1,9 +1,38 @@
 from django.contrib.auth import get_user_model
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
-from backend.constants import MAX_CHAR_LENGTH
+from backend.constants import MAX_CHAR_LENGTH, MAX_MONTH, MAX_YEAR, MIN_YEAR
 
 User = get_user_model()
+
+
+class DateModel(models.Model):
+    """Абстрактная модель счетчиков."""
+
+    date = models.DateField(
+        auto_now_add=True,
+        verbose_name="Дата показаний",
+    )
+    year = models.PositiveSmallIntegerField(
+        "Год",
+        validators=[
+            MinValueValidator(MIN_YEAR, message="Тогда мы еще не работали"),
+            MaxValueValidator(MAX_YEAR, message="Слишком далеко в будущее"),
+        ],
+    )
+    month = models.PositiveSmallIntegerField(
+        "Месяц",
+        validators=[
+            MaxValueValidator(MAX_MONTH, message="В году их только 12")
+        ],
+    )
+
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        return f"{self.month} - {self.year} - {self.date} "
 
 
 class House(models.Model):
@@ -63,7 +92,7 @@ class WaterMeter(models.Model):
         return f"Счетчик {self.number} в квартире {self.apartment}"
 
 
-class WaterMeterData(models.Model):
+class WaterMeterData(DateModel):
     """Показания счетчика за несколько месяцев."""
 
     water_meter = models.ForeignKey(
@@ -73,12 +102,6 @@ class WaterMeterData(models.Model):
         verbose_name="счетчик",
     )
     meter_readings = models.PositiveSmallIntegerField("Показания счетчика")
-    date = models.DateField(
-        "Дата снятия показаний",
-        auto_now_add=True,
-    )
-    year = models.PositiveSmallIntegerField("Год")
-    month = models.PositiveSmallIntegerField("Месяц")
 
     class Meta:
         verbose_name = "Показания счетчика"
@@ -111,7 +134,7 @@ class Tariff(models.Model):
         return self.name
 
 
-class Rent(models.Model):
+class Rent(DateModel):
     """Квартплата за месяц."""
 
     apartment = models.ForeignKey(
@@ -124,12 +147,6 @@ class Rent(models.Model):
     property_price = models.FloatField(
         verbose_name="Цена за содержание общего имущества"
     )
-    date = models.DateField(
-        auto_now_add=True,
-        verbose_name="Дата показаний",
-    )
-    year = models.PositiveSmallIntegerField("Год")
-    month = models.PositiveSmallIntegerField("Месяц")
 
     class Meta:
         verbose_name = "Квартплата"
@@ -141,12 +158,3 @@ class Rent(models.Model):
             f"Квартплата за {self.month} - {self.year}, "
             f"квартира {self.apartment}, дом {self.apartment.house},"
         )
-
-
-# Квартплата включает в себя:
-# Расчет за определенный месяц
-# ● Водоснабжение. Рассчитывается по расходу воды за месяц
-# (тариф_за_единицу_объёма × расход). Расход — это разница между показаниями
-# счётчика за текущий и за предыдущий месяц.
-# ● Содержание общего имущества. Рассчитывается на основе площади квартиры
-# (тариф_за_единицу_площади × площадь_квартиры).

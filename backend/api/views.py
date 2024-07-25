@@ -79,7 +79,7 @@ class RentViewSet(viewsets.ModelViewSet):
     @action(
         detail=False,
         # detail=True,
-        methods=["patch"],
+        methods=["post"],
         url_path="get_rent_per_month",
     )
     def create_rent_per_month(self, request, *args):
@@ -87,7 +87,11 @@ class RentViewSet(viewsets.ModelViewSet):
         month = self.request.data.get("month")
         year = self.request.data.get("year")
         house_id = self.request.data.get("house_id")
-        get_rent.delay(house_id, year, month)
+        get_rent.delay(
+            house_id,
+            year,
+            month,
+        )
         return Response(
             "Выполняется расчет квартплаты", status=status.HTTP_204_NO_CONTENT
         )

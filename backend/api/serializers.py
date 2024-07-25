@@ -1,6 +1,6 @@
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework.fields import SerializerMethodField
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, ValidationError
 from services.models import (
     Apartment,
     House,
@@ -91,7 +91,24 @@ class WaterMeterDataSerializer(ModelSerializer):
 
     class Meta:
         model = WaterMeterData
-        fields = ("id", "water_meter", "meter_readings", "date")
+        fields = (
+            "id",
+            "water_meter",
+            "meter_readings",
+            "date",
+            "year",
+            "month",
+        )
+
+    def validate(self, data):
+        water_meter = data["water_meter"]
+        year = data["year"]
+        month = data["month"]
+        if WaterMeterData.objects.filter(
+            water_meter=water_meter, year=year, month=month
+        ).exists():
+            raise ValidationError("За этот месяц показания уже поданы")
+        return data
 
 
 class TariffSerializer(ModelSerializer):
@@ -112,5 +129,17 @@ class RentSerializer(ModelSerializer):
             "apartment",
             "water_price",
             "property_price",
+            "year",
+            "month",
             "date",
         )
+
+    def validate(self, data):
+        apartment = data["apartment"]
+        year = data["year"]
+        month = data["month"]
+        if Rent.objects.filter(
+            apartment=apartment, year=year, month=month
+        ).exists():
+            raise ValidationError("За этот месяц квартплата уже начислена")
+        return data

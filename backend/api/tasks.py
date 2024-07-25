@@ -1,7 +1,7 @@
 from celery import shared_task
-from services.models import Apartment, Rent, Tariff, WaterMeter, WaterMeterData
+from services.models import Apartment, Tariff, WaterMeter, WaterMeterData
 
-# from .serializers import RentSerializer
+from .serializers import RentSerializer
 
 
 @shared_task
@@ -32,7 +32,11 @@ def get_used_water(apartment, year, month, tariff_average_readings):
 
 
 @shared_task
-def get_rent(house_id, year, month):
+def get_rent(
+    house_id,
+    year,
+    month,
+):
     """Рассчет квартплаты за месяц для всех квартир в доме."""
     water_tariff = Tariff.objects.get(id=1)
     common_property_tariff = Tariff.objects.get(id=2)
@@ -42,10 +46,15 @@ def get_rent(house_id, year, month):
         used_water = get_used_water(
             apartment, year, month, common_property_tariff.average_readings
         )
-        Rent.objects.create(
-            apartment=apartment,
-            water_price=used_water * water_tariff.price,
-            property_price=property_price * apartment.area,
-            year=year,
-            month=month,
+
+        serializer = RentSerializer(
+            data={
+                "apartment": apartment.id,
+                "water_price": used_water * water_tariff.price,
+                "property_price": property_price * apartment.area,
+                "year": int(year),
+                "month": int(month),
+            },
         )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
