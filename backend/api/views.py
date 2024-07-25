@@ -1,21 +1,7 @@
-# import requests
-from api.serializers import (
-    ApartmentGetSerializer,
-    HouseGetSerializer,
-    RentSerializer,
-    TariffSerializer,
-    WaterMeterDataSerializer,
-    WaterMeterGetSerializer,
-)
-
-# from django.shortcuts import get_object_or_404, render
-# from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
-from rest_framework import viewsets  # status,
-
-# from rest_framework.filters import OrderingFilter, SearchFilter
-# from rest_framework.permissions import IsAuthenticated
-# from rest_framework.response import Response
+from rest_framework import status, viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
 from services.models import (
     Apartment,
     House,
@@ -26,7 +12,16 @@ from services.models import (
 )
 from users.models import CustomUser
 
-from .serializers import CustomUserSerializer
+from .serializers import (
+    ApartmentGetSerializer,
+    CustomUserSerializer,
+    HouseGetSerializer,
+    RentSerializer,
+    TariffSerializer,
+    WaterMeterDataSerializer,
+    WaterMeterGetSerializer,
+)
+from .tasks import get_rent
 
 
 class CustomUserViewSet(UserViewSet):
@@ -80,3 +75,19 @@ class RentViewSet(viewsets.ModelViewSet):
 
     queryset = Rent.objects.all()
     serializer_class = RentSerializer
+
+    @action(
+        detail=False,
+        # detail=True,
+        methods=["patch"],
+        url_path="get_rent_per_month",
+    )
+    def create_rent_per_month(self, request, *args):
+        """Рассчет квартплаты по дому за указанный месяц."""
+        month = self.request.data.get("month")
+        year = self.request.data.get("year")
+        house_id = self.request.data.get("house_id")
+        get_rent.delay(house_id, year, month)
+        return Response(
+            "Выполняется расчет квартплаты", status=status.HTTP_204_NO_CONTENT
+        )

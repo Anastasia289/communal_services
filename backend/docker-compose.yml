@@ -36,6 +36,8 @@ services:
     ports:
       - 8000:8000
     command: python manage.py runserver 0.0.0.0:8000
+      # - python manage.py migrate  # это
+
 
   redis:
     image: redis:alpine
@@ -50,10 +52,10 @@ services:
     depends_on:
       - db
       - redis
+      # - backend # и это
     env_file:
       - .env
     command: celery -A backend worker --loglevel=info -P eventlet
-    # command: celery -A backend worker -l info -P eventlet
     restart: always
 
   celery_beat:
@@ -63,6 +65,7 @@ services:
     depends_on:
       - db
       - redis
+      - backend # и это
     env_file:
       - .env
     command: celery -A backend beat -l info

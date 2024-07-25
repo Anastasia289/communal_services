@@ -137,7 +137,10 @@ class Rent(models.Model):
         ordering = ["id"]
 
     def __str__(self):
-        return self.number
+        return (
+            f"Квартплата за {self.month} - {self.year}, "
+            f"квартира {self.apartment}, дом {self.apartment.house},"
+        )
 
 
 # Квартплата включает в себя:
