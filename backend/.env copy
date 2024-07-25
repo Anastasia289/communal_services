@@ -1,0 +1,11 @@
+SECRET_KEY = 'django-insecure-5(274(c8y%om82=$xriz+yec@wiz_=w3x#w)y4m@zu2y3u_n+%'
+DEBUG = True
+# ALLOWED_HOSTS=127.0.0.1, localhost, 'bicyclesrentservice.myddns.me'
+
+POSTGRES_DB=communal_services
+POSTGRES_USER=communal_services_user
+POSTGRES_PASSWORD=communal_services_password
+DB_NAME=communal_services
+
+DB_HOST=db
+DB_PORT=5432

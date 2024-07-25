@@ -1,0 +1,80 @@
+version: '3'
+
+volumes:
+  pg_data:
+  # static:
+  # media:
+  redis:
+
+services:
+
+  db:
+    image: postgres:13.10
+    env_file: .env
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+  # backend:
+  #   # image: anastasia289/communal_services_backend
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   env_file: .env
+  #   volumes:
+  #     - static:/static
+  #     - media:/app/media
+  #   depends_on:
+  #     - db
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    env_file:
+      - .env
+    ports:
+      - 8000:8000
+    command: python manage.py runserver 0.0.0.0:8000
+      # - python manage.py migrate  # это
+
+
+  redis:
+    image: redis:alpine
+    volumes:
+      - redis:/data
+    restart: always
+
+  celery_worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+      - redis
+      # - backend # и это
+    env_file:
+      - .env
+    command: celery -A backend worker --loglevel=info -P eventlet
+    restart: always
+
+  celery_beat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+      - redis
+      - backend # и это
+    env_file:
+      - .env
+    command: celery -A backend beat -l info
+    restart: always
+
+  # gateway:
+  #   image: anastasia289/communal_services_infra
+  #   volumes:
+  #     - static:/static/
+  #     - media:/media
+  #   ports:
+  #     - 8000:80
