@@ -5,13 +5,33 @@
 
 ## Реализованные функции:
 - Созданы модели Дом, Квартира, Счетчик, Показания счетчика, Тариф и Квартплата.
-- После применения миграций в базу автоматически добавляются тестовые данные, в т.ч. суперпользователь. В админку можно зайти используя пару:
-{
-  "email": "admin@ad.ru",
-  "password": "admin"
+- После применения миграций в базу автоматически добавляются тестовые данные, в т.ч. суперпользователь. В админку можно зайти используя пару:  
+{  
+  "email": "admin@ad.ru",  
+  "password": "admin"  
 }
-- С документацией запущенного проекта можно будет ознакомиться по адресу:
+- С документацией запущенного проекта можно ознакомиться здесь:  
 http://127.0.0.1:8000/swagger/
+
+-  Для расчета квартплаты по дому за месяц:
+```
+POST /api/v1/rent/get_rent_per_month/
+В запрос передать год, месяц и номер дома:
+{
+  "year": "2024",
+  "month": "6",
+  "house_id": "2"
+}
+```
+
+-  Для получения полной информации по домам:
+```
+GET /api/v1/house
+
+```
+
+- Можно получать и создавать экземпляры ко всем моделям отдельно
+
 
 
 ##  Запуск проекта
@@ -19,42 +39,17 @@ http://127.0.0.1:8000/swagger/
 ### Запуск в контейнерах
 
 1. Убедиться, что установлен Docker
-2. Скопировать docker-compose.yml
+2. Клонировать репозиторий и перейти в него
 3. Создать .env и заполнить по образцу .env.example
-4. Запустить docker-compose.yml, выполнить миграции и собрать статику
+4. Запустить docker-compose.yml
+5. Выполнить миграции
 ```
+git clone https://github.com/Anastasia289/communal_services.git
+cd communal_services/backend
 docker compose up
 docker compose exec backend python manage.py migrate
-docker compose exec backend python manage.py collectstatic
-docker compose exec backend cp -r /app/collected_static/. /static/
 
 ```
-
-### Запуск без контейнеров
-
-Клонировать репозиторий:  
-https://github.com/Anastasia289/communal_services.git
-
-Перейти в него в командной строке:  
-```cd weather_up```  
-
-Cоздать виртуальное окружение:  
-```python -m venv venv ```  
-
-Активировать виртуальное окружение:  
-```source venv/scripts/activate```  
-
-Установить зависимости из файла requirements.txt:  
-```python -m pip install -r requirements.txt```
-
-Выполнить миграции:  
-``` python manage.py migrate```  
-
-Загрузить города:  
-``` python manage.py load_cities```
-
-Запустить проект:  
-```python manage.py runserver  ```
 
 ## Технологии:
 - Backend: Django, Django Rest Framework

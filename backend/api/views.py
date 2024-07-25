@@ -78,7 +78,6 @@ class RentViewSet(viewsets.ModelViewSet):
 
     @action(
         detail=False,
-        # detail=True,
         methods=["post"],
         url_path="get_rent_per_month",
     )

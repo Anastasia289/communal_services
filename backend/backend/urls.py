@@ -13,7 +13,7 @@ urlpatterns = [
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="weather_app API",
+        title="communal_services API",
         default_version="v1",
         description="API Documentation ",
     ),

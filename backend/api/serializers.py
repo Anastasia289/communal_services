@@ -56,14 +56,19 @@ class ApartmentGetSerializer(ModelSerializer):
     """Сериализатор для получения полной информации о квартире."""
 
     watermeter = SerializerMethodField()
+    rent = SerializerMethodField()
 
     class Meta:
         model = Apartment
-        fields = ("id", "number", "house", "area", "watermeter")
+        fields = ("id", "number", "house", "area", "watermeter", "rent")
 
     def get_watermeter(self, obj):
         watermeter = WaterMeter.objects.filter(apartment=obj).all()
         return WaterMeterGetSerializer(watermeter, many=True).data
+
+    def get_rent(self, obj):
+        rent = Rent.objects.filter(apartment=obj).all()
+        return RentSerializer(rent, many=True).data
 
 
 class WaterMeterGetSerializer(ModelSerializer):
